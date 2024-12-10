@@ -1,0 +1,18 @@
+/* In your CSS file or a CSS-in-JS solution */
+.btn {
+    margin: 0 5px;
+    /* Adjust the margin to control spacing */
+    padding: 10px 20px;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #2563EB;
+}
+
+.btn-danger {
+    background-color: #DC2626;
+}

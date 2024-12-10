@@ -1,0 +1,7 @@
+/* Tambahkan ini ke file CSS Anda */
+.password-input {
+    -webkit-text-security: disc;
+    text-security: disc;
+    -moz-text-security: disc;
+}
+
