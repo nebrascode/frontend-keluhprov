@@ -1,4 +1,4 @@
-import React from "react";
+/* eslint-disable react/prop-types */
 import useDiskusiAduan from "../../Hooks/useDiskusiAduan";
 import iconGemeni from "../../assets/icon.svg"; 
 import Hapus from "../../assets/delete_24px.svg";

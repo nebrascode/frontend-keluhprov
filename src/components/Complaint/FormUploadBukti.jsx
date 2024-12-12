@@ -46,14 +46,14 @@ const FormUploadBukti = ({ complaintId, onClose }) => {
             setFinishedOn("");
 
             Swal.fire({
-                position: "top-end",
+                position: "center",
                 icon: "success",
                 title: "Upload bukti selesai",
                 showConfirmButton: true,
                 timer: 1500,
             });
-
             onClose(); // Menutup form
+
         } catch (error) {
             setError(error.response?.data?.message || "Gagal mengunggah bukti.");
             console.error("Error:", error.message);
