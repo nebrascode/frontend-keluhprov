@@ -121,7 +121,7 @@ const DiskusiAduan = ({ complaint, discussions }) => {
                   onClick={() => handleDeleteDiscussion(newDiscussion.id)}
                   className="text-red-500 flex items-center"
                 >
-                  <img src={Hapus} alt="" className="w-4 h-4 mr-1" /> Hapus
+                  <img src={Hapus} alt="" className="w-4 h-4 mr-1" />
                 </button>
                 <div>
                   <span className="text-gray-500 text-sm">
