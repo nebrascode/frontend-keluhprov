@@ -4,7 +4,7 @@ import foto1 from "../../assets/profile/foto1.png";
 
   const ChatItemList = ({ chat }) => {
     return (
-      <Link to={"/chat-user/:id"}>
+      <Link to={`/chat-user/${chat.id}`}>
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center">
             <img src={foto1} alt="avatar" className="w-12 h-12 rounded-full mr-4" />
