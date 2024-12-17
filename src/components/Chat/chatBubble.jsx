@@ -4,22 +4,15 @@ const ChatBubble = ({ chat }) => {
 
     // Menentukan alignment bubble
     const containerClass = isUser ? "justify-start" : "justify-end";
-    const bubbleClass = isUser ? "chat-start" : "chat-end";
+    const bubbleClass = isUser ? "chat-start " : "chat-end";
+    const colorBubble = isUser ? "bg-main-lighter" : "bg-light-2"
 
     return (
         <div className={`flex ${containerClass} items-end my-2`}>
-            {/* Avatar tampil hanya jika pesan diterima */}
-            {isUser && (
-                <img
-                    src={chat.avatar || "https://via.placeholder.com/40"} // Default avatar jika tidak ada
-                    alt="avatar"
-                    className="w-10 h-10 rounded-full mr-2"
-                />
-            )}
             <div>
                 {/* Chat Bubble */}
                 <div className={`chat ${bubbleClass}`}>
-                   <div className="chat-bubble bg-main-lighter text-black text-light"> {chat.Message}</div>
+                   <div className={`chat-bubble  text-black ${colorBubble} text-light`}> {chat.Message}</div>
                 </div>
 
                 {/* Waktu Pesan */}

@@ -52,9 +52,6 @@ const useDiskusiAduan = (complaint, discussions) => {
               },
             }
           );
-          const updatedDiscussions = discussions.filter(
-            (discussion) => discussion.id !== id
-          );
           setNewDiscussion(null);
           setTextInput("");
           MySwal.fire("Terhapus!", "Diskusi telah dihapus.", "success");

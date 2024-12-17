@@ -1,38 +1,99 @@
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { FiPaperclip } from "react-icons/fi";
 import { IoMicOutline } from "react-icons/io5";
-import { TiLocationArrowOutline } from "react-icons/ti"
+import { TiLocationArrowOutline } from "react-icons/ti";
 import { Link, useParams } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import ChatBubble from "./chatBubble";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import foto1 from '../../assets/profile/foto1.png'
 
 const ChatDetail = () => {
-  const { id } = useParams();
-  const [ messages, setMessages ] = useState([]);
-  const [ loading, setLoading ] = useState(true);
-  const [ error, setError ] = useState(null);
+  const { id } = useParams(); // ID room dari URL parameter
+  const [messages, setMessages] = useState([]); // Menyimpan pesan dari room
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [roomName, setRoomName] = useState(""); // Menyimpan nama room
+  const [profile, setProfile] = useState(""); // Avatar room
+  const [newMessage, setNewMessage] = useState(""); // Input pesan baru
 
   useEffect(() => {
     fetchChatDetail();
+    fetchRoomName();
   }, [id]);
 
+  // Fetch messages berdasarkan ID room
   const fetchChatDetail = async () => {
-    setLoading(true); // Set loading menjadi true sebelum mulai fetch data
+    setLoading(true);
     try {
-      const token = sessionStorage.getItem("token"); // Ambil token dari sessionStorage
-      const response = await axios.get(`http://localhost:8000/api/v1/rooms/${id}/messages`, {
-        headers: {
-          "Content-Type": "application/json", // Tipe konten
-          Authorization: `Bearer ${token}`, // Header Authorization
-        },
-      });
-      setMessages(response.data);
+      const token = sessionStorage.getItem("token");
+      const response = await axios.get(
+        `http://localhost:8000/api/v1/rooms/${id}/messages`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setMessages(response.data); // Menyimpan pesan
       setLoading(false);
     } catch (err) {
-      setError(err.message); // Jika error, simpan pesan error
+      setError(err.message);
+    }
+  };
+
+  // Fetch detail nama room berdasarkan ID
+  const fetchRoomName = async () => {
+    try {
+      const token = sessionStorage.getItem("token");
+      const response = await axios.get(`http://localhost:8000/api/v1/rooms/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const room = response.data; // Data room langsung dari response
+      setRoomName(room.Name);
+      setProfile(`https://via.placeholder.com/48?text=${getInitials(room.Name)}`);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  // Fungsi mendapatkan inisial dari nama room
+  const getInitials = (name) => {
+    if (!name) return "NA";
+    const words = name.split(" ");
+    if (words.length === 1) return words[0][0].toUpperCase();
+    return `${words[0][0]}${words[1][0]}`.toUpperCase();
+  };
+
+  // Fungsi untuk mengirim pesan baru
+  const sendMessage = async () => {
+    if (!newMessage.trim()) return; // Cegah pengiriman pesan kosong
+    try {
+      const token = sessionStorage.getItem("token");
+      const payload = {
+        RoomID: id,
+        SenderID: 1, // ID admin, bisa diganti sesuai implementasi
+        SenderType: "admin",
+        Message: newMessage,
+      };
+      const response = await axios.post(
+        `http://localhost:8000/api/v1/rooms/${id}/messages`,
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setMessages((prevMessages) => [...prevMessages, response.data]); // Tambahkan pesan baru ke daftar
+      setNewMessage(""); // Reset input pesan
+    } catch (err) {
+      console.error("Error sending message:", err.message);
     }
   };
 
@@ -68,23 +129,25 @@ const ChatDetail = () => {
         <Link to={"/chat-user"} className="mr-4 text-3xl">
           <IoIosArrowRoundBack />
         </Link>
-        <img src={foto1} alt="avatar" className="w-12 h-12 rounded-full mr-4" />
-        <div className='ml-[300px] flex-col'>
-          <div className='text-black text-xs font-medium  leading-3'>nama</div>
-          <div className="text-neutral-500 text-xs font-medium  leading-3 mt-1">Active now</div>
+        {/* Avatar Inisial */}
+        <div className="relative inline-flex items-center justify-center w-12 h-12 overflow-hidden bg-gray-200 rounded-full mr-4">
+          <span className="font-medium text-gray-600">{getInitials(roomName)}</span>
         </div>
+        {/* Nama Room */}
+        <div className="text-dark-2 font-bold">{roomName}</div>
       </div>
 
       {/* Chat Messages */}
       <div className="p-4 h-96 overflow-y-auto">
         <div className="text-center text-sm mb-4">Today</div>
-        {messages.map(chat => (
+        {messages.map((chat) => (
           <ChatBubble
             key={chat.ID}
             message={chat.Message}
             time={new Date(chat.CreatedAt).toLocaleTimeString()}
             senderType={chat.SenderType}
-            chat={chat} />
+            chat={chat}
+          />
         ))}
       </div>
 
@@ -93,12 +156,21 @@ const ChatDetail = () => {
         <button className="hover:text-gray-500">
           <FiPaperclip />
         </button>
-        <input type="text" className="flex-grow ml-4 p-2 border-none" placeholder="Type a Message" />
+        <input
+          type="text"
+          className="flex-grow ml-4 p-2 border-none"
+          placeholder="Type a Message"
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)} // Update state saat input berubah
+        />
         <div className="flex gap-2 text-xl">
           <button className="hover:text-gray-500">
             <IoMicOutline />
           </button>
-          <button className="hover:text-gray-500">
+          <button
+            className="hover:text-gray-500"
+            onClick={sendMessage} // Kirim pesan saat tombol diklik
+          >
             <TiLocationArrowOutline />
           </button>
         </div>

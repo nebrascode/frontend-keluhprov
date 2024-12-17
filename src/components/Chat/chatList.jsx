@@ -3,63 +3,68 @@ import { useEffect, useState } from "react";
 import ChatItemList from "./chatItemList";
 import { CircularProgress } from "@mui/material";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const ChatList = () => {
   const [data, setData] = useState([]); // State untuk data chat
   const [loading, setLoading] = useState(false); // State untuk loading
   const [error, setError] = useState(null); // State untuk error
-  const [readChats, setReadChats] = useState([]); // Menyimpan ID chat yang sudah dibaca
+  const navigate = useNavigate(); // Untuk navigasi ke halaman detail chat
 
   useEffect(() => {
     fetchChatList(); // Fetch data saat komponen pertama kali dirender
   }, []);
 
   const fetchChatList = async () => {
-    setLoading(true); // Set loading menjadi true sebelum mulai fetch data
+    setLoading(true);
     try {
-      const token = sessionStorage.getItem("token"); // Ambil token dari sessionStorage
+      const token = sessionStorage.getItem("token");
       const response = await axios.get("http://localhost:8000/api/v1/rooms", {
         headers: {
-          "Content-Type": "application/json", // Tipe konten
-          Authorization: `Bearer ${token}`, // Header Authorization
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
-  
-      // Format data yang diterima dari API agar sesuai dengan yang dibutuhkan
+
+      // Format data agar sesuai dengan kebutuhan
       const formattedData = response.data.map((room) => {
-        // Hitung jumlah pesan yang belum dibaca oleh admin
-        const unreadMessages = room.Messages.filter((message) => {
-          // Anggap pesan yang terakhir dikirim oleh user yang belum dibaca admin
-          return message.SenderType === "user" && !readChats.includes(room.ID + "-" + message.ID);
-        });
-  
+        const unreadMessages = room.Messages.filter(
+          (message) => message.SenderType === "user"
+        );
+
         return {
           id: room.ID,
           name: room.Name,
-          avatar: "https://via.placeholder.com/48", // Gambar avatar placeholder
-          message: room.Messages.length > 0 
-            ? room.Messages[room.Messages.length - 1].Message 
-            : "No messages yet", // Ambil pesan terakhir atau "No messages yet"
+          messages: room.Messages,
+          lastMessage: room.Messages.length > 0
+            ? room.Messages[room.Messages.length - 1].Message
+            : "No messages yet",
           time: room.Messages.length > 0
             ? new Date(room.Messages[room.Messages.length - 1].CreatedAt).toLocaleTimeString()
-            : "", // Format waktu pesan terakhir
-          unreadCount: unreadMessages.length, // Hitung jumlah pesan yang belum dibaca
+            : "",
+          unreadCount: unreadMessages.length,
         };
       });
-  
-      setData(formattedData); // Simpan data yang sudah diformat
+
+      setData(formattedData);
     } catch (err) {
-      setError(err.message); // Jika error, simpan pesan error
+      setError(err.message);
     } finally {
-      setLoading(false); // Set loading menjadi false setelah selesai
+      setLoading(false);
     }
   };
-  
 
   const handleChatOpen = (chatId) => {
-    if (!readChats.includes(chatId)) {
-      setReadChats([...readChats, chatId]); // Tambahkan chat ke daftar yang sudah dibaca
-    }
+    // Perbarui unreadCount menjadi 0 untuk chat yang di-klik
+    const updatedData = data.map((chat) => {
+      if (chat.id === chatId) {
+        return { ...chat, unreadCount: 0 }; // Reset unreadCount
+      }
+      return chat;
+    });
+
+    setData(updatedData); // Update state data
+    navigate(`/chat-user/${chatId}`); // Pindah ke halaman detail chat
   };
 
   if (loading) {
@@ -91,9 +96,17 @@ const ChatList = () => {
       <div className="bg-main-color text-white text-3xl font-bold p-2.5">Chat</div>
       <div>
         {data.map((chat) => (
-          <ChatItemList key={chat.id} 
-          chat={chat} 
-          onChatOpen={() => handleChatOpen(chat.id)}/>
+          <ChatItemList
+            key={chat.id}
+            chat={{
+              id: chat.id,
+              name: chat.name,
+              message: chat.lastMessage,
+              time: chat.time,
+              unreadCount: chat.unreadCount,
+            }}
+            onChatOpen={() => handleChatOpen(chat.id)} // Panggil handleChatOpen saat chat dibuka
+          />
         ))}
       </div>
     </div>
