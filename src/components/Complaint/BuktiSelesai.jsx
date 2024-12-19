@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const TampilBuktiSelesai = ({ complaintId }) => {
     const [ buktiSelesai, setBuktiSelesai ] = useState([]);
@@ -36,9 +37,61 @@ const TampilBuktiSelesai = ({ complaintId }) => {
         fetchDataBukti();
     }, [ complaintId ]);
 
+    const handleDeleteBukti = async (id) => {
+        try {
+            const token = sessionStorage.getItem("token");
+            const confirmed = await confirmDelete();
+
+            if (!confirmed) return;
+
+            const response = await axios.delete(`http://localhost:8000/api/v1/unggah-bukti/${id}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+            if (response.status === 200) {
+                Swal.fire({
+                    title: 'Deleted!',
+                    text: 'Bukti berhasil dihapus.',
+                    icon: 'success',
+                    timer:1500,
+                    showConfirmButton:false
+                });
+                setBuktiSelesai(null);
+            } else {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+        } catch (error) {
+            console.error('Error deleting bukti', error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'Gagal menghapus bukti.',
+                icon: 'error',
+                confirmButtonColor: '#2563EB',
+            });
+        }
+    }
+
+    const confirmDelete = async () => {
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            confirmButtonColor: '#DC2626',
+            cancelButtonColor: '#2563EB',
+            reverseButtons: true,
+        });
+
+        return result.isConfirmed;
+    }
+
     if (loading) return <div>Loading...</div>;
-    if (error) return <><p className="text-red-500">{error}</p>
-    </>;
+    if (error) return <p className="text-red-500">{error}</p>
 
     return (
         <><div className="bg-main-color p-4 rounded-md mb-0">
@@ -60,6 +113,11 @@ const TampilBuktiSelesai = ({ complaintId }) => {
                             <div className="bg-white p-5 rounded-lg">
                                 <p className="">Nama Penanggung Jawab: {bukti.penanggung_jawab}</p>
                                 <p className="">Tanggal Penyelesaian: {new Date(bukti.finished_on).toLocaleDateString()}</p>
+                            </div>
+                            <div>
+                                <button className="btn btn-sm text-error-3" onClick={()=>handleDeleteBukti(bukti.id)}>
+                                    <i className="fa fa-trash"></i>
+                                </button>
                             </div>
                         </div>
                     ))

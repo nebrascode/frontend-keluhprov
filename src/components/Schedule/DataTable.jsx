@@ -58,7 +58,8 @@ export default function DataTable() {
                 title:"Successfully",
                 text: "Berhasil menghapus data",
                 icon:"success",
-                showConfirmButton:false
+                showConfirmButton:false,
+                timer: 1500,
             })
         } catch (error) {
             console.error("Error deleting data:", error);
@@ -66,7 +67,8 @@ export default function DataTable() {
                 title: "Error!",
                 text: "Failed to delete data.",
                 icon: "error",
-                showConfirmButton:false
+                showConfirmButton:false,
+                timer: 1500,
             })
         }
     };

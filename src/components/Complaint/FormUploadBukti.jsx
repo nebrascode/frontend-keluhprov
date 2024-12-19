@@ -53,6 +53,7 @@ const FormUploadBukti = ({ complaintId, onClose }) => {
                 timer: 1500,
             });
             onClose(); // Menutup form
+            window.location.reload(); // Memuat ulang halaman
 
         } catch (error) {
             setError(error.response?.data?.message || "Gagal mengunggah bukti.");
