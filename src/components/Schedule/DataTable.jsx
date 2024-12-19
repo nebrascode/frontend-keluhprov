@@ -2,6 +2,7 @@ import DataRow from "./DataRow";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import AddDataSchedule from "./formAddData";
+import Swal from "sweetalert2";
 
 export default function DataTable() {
     const [data, setData] = useState([]);
@@ -14,7 +15,7 @@ export default function DataTable() {
             try {
                 const token = sessionStorage.getItem("token");
                 const response = await axios.get(
-                    "http://localhost:8000/api/v1/schedules", // URL API untuk jadwal
+                    "http://localhost:8000/api/v1/schedules", // URL API jadwal
                     {
                         headers: {
                             "Content-Type": "application/json",
@@ -23,7 +24,7 @@ export default function DataTable() {
                     }
                 );
                 if (response.data) {
-                    setData(response.data); // Menyimpan data yang diterima dari API
+                    setData(response.data);
                 }
             } catch (err) {
                 setError("Gagal memuat data.");
@@ -43,6 +44,32 @@ export default function DataTable() {
         setShowModal(false);
     };
 
+    // Fungsi untuk menghapus data berdasarkan ID
+    const handleDelete = async (id) => {
+        try {
+            const token = sessionStorage.getItem("token");
+            await axios.delete(`http://localhost:8000/api/v1/schedules/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setData((prevData) => prevData.filter((item) => item.id !== id));
+            Swal.fire({
+                title:"Successfully",
+                text: "Berhasil menghapus data",
+                icon:"success",
+                showConfirmButton:false
+            })
+        } catch (error) {
+            console.error("Error deleting data:", error);
+            Swal.fire({
+                title: "Error!",
+                text: "Failed to delete data.",
+                icon: "error",
+                showConfirmButton:false
+            })
+        }
+    };
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div className="text-red-500">{error}</div>;
@@ -58,34 +85,21 @@ export default function DataTable() {
             <div className="mt-2 bg-white rounded-md shadow-lg w-full">
                 <div className="overflow-x-auto">
                     {/* Modal Tambah Data */}
-                    {showModal && (
-                        <AddDataSchedule
-                            onClose={handleCloseModal}/>
-                    )}
+                    {showModal && <AddDataSchedule onClose={handleCloseModal} />}
                     <table className="table">
                         <thead>
                             <tr>
-                                <th className="flex items-center">
-                                    <i className="fa fa-tasks text-3xl mr-3 text-main-darker"></i>Job
-                                </th>
-                                <th>
-                                    <i className="fa fa-user text-3xl mr-3 text-main-darker"></i>Name
-                                </th>
-                                <th>
-                                    <i className="fa fa-hourglass-start text-3xl mr-3 text-main-darker"></i>
-                                    Start
-                                </th>
-                                <th>
-                                    <i className="fa fa-hourglass-end text-3xl mr-3 text-main-darker"></i>End
-                                </th>
-                                <th>
-                                    <i className="fa fa-spinner text-3xl mr-3 text-main-darker"></i> Status
-                                </th>
+                                <th>Job</th>
+                                <th>Name</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {data.map((item) => (
-                                <DataRow key={item.id} data={item} />
+                                <DataRow key={item.id} data={item} onDelete={handleDelete} />
                             ))}
                         </tbody>
                     </table>

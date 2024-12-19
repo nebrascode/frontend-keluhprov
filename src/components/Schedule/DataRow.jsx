@@ -2,36 +2,42 @@
 import { useState } from "react";
 import EditSchedule from "./formEdit";
 
-export default function DataRow({ data }) {
-    const [showEditModal, setShowEditModal] = useState(false);
+export default function DataRow({ data, onDelete }) {
+    const [ showEditModal, setShowEditModal ] = useState(false);
+    const [ showDeleteModal, setShowDeleteModal ] = useState(false);
 
-    const handleOpenModal = () => {
+    const handleOpenEditModal = () => {
         setShowEditModal(true);
     };
 
-    const handleCloseModal = () => {
+    const handleCloseEditModal = () => {
         setShowEditModal(false);
     };
 
     const getStatusColor = (status) => {
         switch (status) {
             case "Pending":
-                return "badge-error"; // Warna merah
+                return "badge-error"; // Merah
             case "Doing":
-                return "badge-info"; // Warna biru
+                return "badge-info"; // Biru
             case "Done":
-                return "badge-success"; // Warna hijau
+                return "badge-success"; // Hijau
             default:
-                return "badge-neutral"; // Warna default
+                return "badge-neutral"; // Default
         }
+    };
+
+    const handleDelete = () => {
+        onDelete(data.id); // Memanggil fungsi onDelete yang diterima dari DataTable
+        setShowDeleteModal(false); // Menutup modal delete
     };
 
     return (
         <>
-            {/* Tabel baris */}
+            {/* Tabel Baris */}
             <tr
                 className="transition duration-300 ease-in-out hover:bg-main-lighter cursor-pointer"
-                onClick={handleOpenModal}
+                onClick={handleOpenEditModal}
             >
                 <td>
                     <span>{data.job}</span>
@@ -52,25 +58,41 @@ export default function DataRow({ data }) {
                 <td>
                     <button
                         onClick={(e) => {
-                            e.stopPropagation(); // Mencegah trigger modal edit saat menghapus
-                            // setShowDeleteModal(true)
+                            e.stopPropagation(); // Menghindari trigger modal edit
+                            setShowDeleteModal(true); // Membuka modal delete
                         }}
-                        className="btn btn-sm bg-transparent"
+                        className="btn btn-sm text-error-3"
                     >
                         <i className="fa fa-trash"></i>
                     </button>
                 </td>
             </tr>
 
-            {/* Modal Update */}
-            {showEditModal && (
-                <EditSchedule id={data.id} onClose={handleCloseModal}/>
-            )}
+            {/* Modal Edit */}
+            {showEditModal && <EditSchedule id={data.id} onClose={handleCloseEditModal} />}
 
             {/* Modal Konfirmasi Hapus */}
-            {/* {showDeleteModal && (
-               <></>
-            )} */}
+            {showDeleteModal && (
+                <div className="modal modal-open">
+                    <div className="modal-box">
+                        <h3 className="font-bold text-lg">Are you sure you want to delete this data?</h3>
+                        <div className="modal-action">
+                            <button
+                                onClick={() => setShowDeleteModal(false)}
+                                className="btn"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleDelete}
+                                className="btn btn-error"
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 }
