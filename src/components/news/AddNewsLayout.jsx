@@ -71,7 +71,7 @@ const AddNewsLayout = () => {
       setFile(null);
       setPreview(null);
       Swal.fire({
-        position: "top-end",
+        position: "center",
         icon: "success",
         title: "Successfully added new news",
         showConfirmButton: false,

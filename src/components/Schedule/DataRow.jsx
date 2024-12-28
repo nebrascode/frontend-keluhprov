@@ -1,64 +1,43 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
+import EditSchedule from "./formEdit";
 
-export default function DataRow({ data, onUpdate, onDelete }) {
-    const [showModal, setShowModal] = useState(false);
-    const [formData, setFormData] = useState({
-        name: data.name,
-        email: data.email,
-        job: data.job,
-        start_date: data.start_date,
-        end_date: data.end_date,
-        status: data.status,
-    });
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
+export default function DataRow({ data, onDelete }) {
+    const [ showEditModal, setShowEditModal ] = useState(false);
+    const [ showDeleteModal, setShowDeleteModal ] = useState(false);
 
-    const handleOpenModal = () => {
-        setShowModal(true);
+    const handleOpenEditModal = () => {
+        setShowEditModal(true);
     };
 
-    const handleCloseModal = () => {
-        setShowModal(false);
-    };
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        onUpdate(formData); // Fungsi callback untuk memperbarui data
-        setShowModal(false); // Tutup modal setelah update
-    };
-
-    const handleDelete = () => {
-        onDelete(data.id); // Fungsi callback untuk menghapus data berdasarkan ID
-        setShowDeleteModal(false); // Menutup modal konfirmasi setelah data dihapus
+    const handleCloseEditModal = () => {
+        setShowEditModal(false);
     };
 
     const getStatusColor = (status) => {
         switch (status) {
             case "Pending":
-                return "badge-error"; // Warna merah
+                return "badge-error"; // Merah
             case "Doing":
-                return "badge-info"; // Warna biru
+                return "badge-info"; // Biru
             case "Done":
-                return "badge-success"; // Warna hijau
+                return "badge-success"; // Hijau
             default:
-                return "badge-neutral"; // Warna default
+                return "badge-neutral"; // Default
         }
+    };
+
+    const handleDelete = () => {
+        onDelete(data.id); // Memanggil fungsi onDelete yang diterima dari DataTable
+        setShowDeleteModal(false); // Menutup modal delete
     };
 
     return (
         <>
-            {/* Tabel baris */}
+            {/* Tabel Baris */}
             <tr
                 className="transition duration-300 ease-in-out hover:bg-main-lighter cursor-pointer"
-                onClick={handleOpenModal}
+                onClick={handleOpenEditModal}
             >
                 <td>
                     <span>{data.job}</span>
@@ -79,101 +58,18 @@ export default function DataRow({ data, onUpdate, onDelete }) {
                 <td>
                     <button
                         onClick={(e) => {
-                            e.stopPropagation(); // Mencegah trigger modal edit saat menghapus
-                            setShowDeleteModal(true); // Menampilkan modal konfirmasi hapus
+                            e.stopPropagation(); // Menghindari trigger modal edit
+                            setShowDeleteModal(true); // Membuka modal delete
                         }}
-                        className="btn btn-sm bg-transparent"
+                        className="btn btn-sm text-error-3"
                     >
                         <i className="fa fa-trash"></i>
                     </button>
                 </td>
             </tr>
 
-            {/* Modal Update */}
-            {showModal && (
-                <div className="modal modal-open">
-                    <div className="modal-box">
-                        <h3 className="font-bold text-lg">Update Data</h3>
-                        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-                            <div>
-                                <label className="block text-sm font-medium">Name</label>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value={formData.name}
-                                    onChange={handleInputChange}
-                                    className="input input-bordered w-full"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium">Email</label>
-                                <input
-                                    type="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleInputChange}
-                                    className="input input-bordered w-full"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium">Job</label>
-                                <input
-                                    type="text"
-                                    name="job"
-                                    value={formData.job}
-                                    onChange={handleInputChange}
-                                    className="input input-bordered w-full"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium">Start Date</label>
-                                <input
-                                    type="date"
-                                    name="start_date"
-                                    value={formData.start_date}
-                                    onChange={handleInputChange}
-                                    className="input input-bordered w-full"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium">End Date</label>
-                                <input
-                                    type="date"
-                                    name="end_date"
-                                    value={formData.end_date}
-                                    onChange={handleInputChange}
-                                    className="input input-bordered w-full"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium">Status</label>
-                                <select
-                                    name="status"
-                                    value={formData.status}
-                                    onChange={handleInputChange}
-                                    className="select select-bordered w-full"
-                                >
-                                    <option value="Pending">Pending</option>
-                                    <option value="Doing">Doing</option>
-                                    <option value="Done">Done</option>
-                                </select>
-                            </div>
-                            <div className="modal-action">
-                                <button
-                                    type="button"
-                                    onClick={handleCloseModal}
-                                    className="btn"
-                                >
-                                    Cancel
-                                </button>
-                                <button type="submit" className="btn bg-info-3 text-white">
-                                    Save
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
+            {/* Modal Edit */}
+            {showEditModal && <EditSchedule id={data.id} onClose={handleCloseEditModal} />}
 
             {/* Modal Konfirmasi Hapus */}
             {showDeleteModal && (
@@ -189,7 +85,7 @@ export default function DataRow({ data, onUpdate, onDelete }) {
                             </button>
                             <button
                                 onClick={handleDelete}
-                                className="btn btn-danger"
+                                className="btn btn-error"
                             >
                                 Delete
                             </button>

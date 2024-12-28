@@ -3,12 +3,16 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import FormUploadBukti from "./FormUploadBukti";
 import TampilBuktiSelesai from "./BuktiSelesai";
+import Swal from "sweetalert2";
 
 const ProsesAduan = ({ complaintId, refreshProcess }) => {
   const [ processes, setProcesses ] = useState([]);
   const [ loading, setLoading ] = useState(true);
   const [ error, setError ] = useState(null);
   const [ showPopUp, setShowPopUp ] = useState(false);
+  const [buktiSelesai, setBuktiSelesai] = useState([]);
+  const [buktiLoading, setBuktiLoading] = useState(true);
+  const [buktiError, setBuktiError] = useState(null);
 
   useEffect(() => {
     const fetchComplaintProcesses = async () => {
@@ -34,8 +38,88 @@ const ProsesAduan = ({ complaintId, refreshProcess }) => {
       }
     };
 
+    const fetchDataBukti = async () => {
+      try {
+        const token = sessionStorage.getItem("token");
+        const response = await axios.get(
+          `http://localhost:8000/api/v1/unggah-bukti/${complaintId}`, // Filter berdasarkan complaintId
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.data && response.data.length > 0) {
+          setBuktiSelesai(response.data); // Menyimpan array bukti
+        } else {
+          setBuktiError("Belum ada bukti penyelesaian.");
+        }
+      } catch (err) {
+        setError("Gagal memuat bukti penyelesaian.");
+      } finally {
+        setBuktiLoading(false);
+      }
+    };
+
+
     fetchComplaintProcesses();
+    fetchDataBukti();
   }, [ complaintId, refreshProcess ]);
+
+  const handleDeleteBukti = async (id) => {
+    try {
+        const token = sessionStorage.getItem("token");
+        const confirmed = await confirmDelete();
+
+        if (!confirmed) return;
+
+        const response = await axios.delete(`http://localhost:8000/api/v1/unggah-bukti/${id}`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        if (response.status === 200) {
+            Swal.fire({
+                title: 'Deleted!',
+                text: 'Bukti berhasil dihapus.',
+                icon: 'success',
+                timer:1500,
+                showConfirmButton:false
+            });
+            setBuktiSelesai(null);
+        } else {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+    } catch (error) {
+        console.error('Error deleting bukti', error);
+        Swal.fire({
+            title: 'Error!',
+            text: 'Gagal menghapus bukti.',
+            icon: 'error',
+            confirmButtonColor: '#2563EB',
+        });
+    }
+}
+
+const confirmDelete = async () => {
+    const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!',
+        confirmButtonColor: '#DC2626',
+        cancelButtonColor: '#2563EB',
+        reverseButtons: true,
+    });
+
+    return result.isConfirmed;
+}
 
   const getLastProcess = () => {
     const statusOrder = [
@@ -130,7 +214,9 @@ const ProsesAduan = ({ complaintId, refreshProcess }) => {
       </div>
 
       {/*tombol unggah bukti penyelesaian*/}
-      {currentProcess && currentProcess.status === "Selesai" && (
+      {currentProcess && 
+        currentProcess.status === "Selesai" && 
+        buktiSelesai.length === 0 && (
         <button
           onClick={handleOpenPopUp}
           className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
@@ -145,9 +231,14 @@ const ProsesAduan = ({ complaintId, refreshProcess }) => {
           onClose={handleClosePopUp}
         />
       )}
-    {currentProcess && currentProcess.status === "Selesai" && (
-    <TampilBuktiSelesai complaintId={complaintId} />
-    )}
+      {currentProcess && currentProcess.status === "Selesai" && (
+        <TampilBuktiSelesai complaintId={complaintId}
+          buktiSelesai={buktiSelesai}
+          loading={buktiLoading}
+          error={buktiError}
+          onDelete={handleDeleteBukti}
+         />
+      )}
     </div>
   );
 };
