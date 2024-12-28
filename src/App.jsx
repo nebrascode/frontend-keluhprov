@@ -16,7 +16,7 @@ import CreateNews from './pages/news/CreateNews'
 import EditNews from './pages/news/EditNews'
 import DetailNews from "./pages/Berita/detailNews";
 import ChatListPage from "./pages/chat/ChatList"
-import ChatDetailPage from "./pages/chat/ChatList"
+import ChatDetailPage from "./pages/chat/chatDetail"
 import NotFound from './pages/404-NotFound';
 import Schedule from "./pages/schedules/schedules"
 

@@ -1,6 +1,6 @@
 import HeaderLayout from "../../components/Header/HeaderLayout"
 import SidebarLayout from "../../components/Header/SidebarLayout"
-import ChatDetail from '../../components/chat/chatDetail'
+import ChatDetail from "../../components/Chat/chatDetail"
 
 export default function ChatDetailPage() {
     return (

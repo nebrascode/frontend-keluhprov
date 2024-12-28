@@ -62,7 +62,7 @@ function CategoryLayout() {
 
       setCategory((prevCategory) => prevCategory.filter((category) => category.ID !== categoryID));
       Swal.fire({
-        position: 'top-end',
+        position: 'center',
         icon: 'success',
         title: 'Kategori berhasil dihapus',
         showConfirmButton: false,

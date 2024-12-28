@@ -38,7 +38,6 @@ const TampilBuktiSelesai = ({ complaintId }) => {
 
     if (loading) return <div>Loading...</div>;
     if (error) return <><p className="text-red-500">{error}</p>
-        <span className="text-dark-1">id complaint= {complaintId}</span>
     </>;
 
     return (
