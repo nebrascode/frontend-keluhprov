@@ -90,13 +90,13 @@ export default function DataTable() {
                     {showModal && <AddDataSchedule onClose={handleCloseModal} />}
                     <table className="table">
                         <thead>
-                            <tr>
-                                <th>Job</th>
-                                <th>Name</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                                <th>Status</th>
-                                <th>Actions</th>
+                            <tr className="font-poppins font-light">
+                                <th ><i className="fa fa-tasks text-warning-3 text-xl mr-2" aria-hidden="true"></i>Job</th>
+                                <th ><i className="fa fa-user text-warning-3 text-xl mr-2" aria-hidden="true"></i>Name</th>
+                                <th><i className="fa fa-calendar-check text-warning-3 text-xl mr-2" aria-hidden="true"></i>Start Date</th>
+                                <th><i className="fa fa-calendar-times text-warning-3 text-xl mr-2" aria-hidden="true"></i>End Date</th>
+                                <th><i className="fa fa-spinner text-warning-3 text-xl mr-2" aria-hidden="true"></i>Status</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
