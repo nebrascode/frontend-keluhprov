@@ -3,12 +3,15 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import AddDataSchedule from "./formAddData";
 import Swal from "sweetalert2";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@radix-ui/react-dropdown-menu";
+
 
 export default function DataTable() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [statusFilter, setStatusFilter] = useState("All");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -35,6 +38,8 @@ export default function DataTable() {
 
         fetchData();
     }, []);
+
+    const filteredData = statusFilter === "All" ? data : data.filter((item) => item.status === statusFilter);
 
     const handleClick = () => {
         setShowModal(true);
@@ -78,12 +83,28 @@ export default function DataTable() {
 
     return (
         <div className="mt-4">
-            <button
-                className="bg-main-color hover:bg-main-darker rounded px-5 py-1 ml-3"
-                onClick={handleClick}
-            >
-                <i className="fa fa-plus mr-1"></i> Add
-            </button>
+            <div className="flex justify-between items-center mb-2 px-3"> {/* Added div for better layout */}
+                <button
+                    className="bg-main-color hover:bg-main-darker rounded px-5 py-1 ml-3"
+                    onClick={handleClick}
+                >
+                    <i className="fa fa-plus mr-1"></i> Add
+                </button>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <button className="bg-main-color hover:bg-main-darker rounded px-5 py-1">
+                            <i className="fa fa-filter mr-2 "></i>
+                            Filter by Status: {statusFilter}
+                        </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="bg-white border border-gray-200 shadow-lg rounded-md">
+                        <DropdownMenuItem onClick={() => setStatusFilter("All")} className="hover:bg-main-lighter">All</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setStatusFilter("Pending")} className="hover:bg-main-lighter">Pending</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setStatusFilter("Doing")} className="hover:bg-main-lighter">Doing</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setStatusFilter("Done")} className="hover:bg-main-lighter">Done</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div> {/* End of added div */}
             <div className="mt-2 bg-white rounded-md shadow-lg w-full">
                 <div className="overflow-x-auto">
                     {/* Modal Tambah Data */}
@@ -100,7 +121,7 @@ export default function DataTable() {
                             </tr>
                         </thead>
                         <tbody>
-                            {data.map((item) => (
+                        {filteredData.map((item) => (
                                 <DataRow key={item.id} data={item} onDelete={handleDelete} />
                             ))}
                         </tbody>
