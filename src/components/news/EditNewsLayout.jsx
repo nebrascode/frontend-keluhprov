@@ -205,13 +205,13 @@ const EditNewsLayout = () => {
                       id="kategory"
                       value={categoryId}
                       onChange={(e) => setCategoryId(e.target.value)}
-                      required
-                      className="p-2 border border-gray-300 rounded"
                     >
-                      <option value="">Pilih kategori Berita</option>
+                      <option value="" disabled>
+                        Pilih kategori Berita
+                      </option>
                       {category.map((category, index) => (
-                        <option key={index} value={category.ID}>
-                          {category.Name}
+                        <option key={index} value={category.id}>
+                          {category.name}
                         </option>
                       ))}
                     </select>

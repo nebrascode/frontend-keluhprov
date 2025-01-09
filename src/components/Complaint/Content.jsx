@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";

@@ -6,15 +6,14 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 export default function Login() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [errorLogin, setErrorLogin] = useState(false);
+    const [ email, setEmail ] = useState('');
+    const [ password, setPassword ] = useState('');
+    const [ errorLogin, setErrorLogin ] = useState(false);
     const navigate = useNavigate();
-    const [showPassword, setShowPassword] = useState(false);
+    const [ showPassword, setShowPassword ] = useState(false);
 
     const handleLogin = async (event) => {
         event.preventDefault();
-
         try {
             const response = await axios.post('http://localhost:8000/api/v1/admins/login', {
                 // Data yang dikirimkan dalam body request, sesuaikan dengan API Anda
@@ -49,7 +48,6 @@ export default function Login() {
             setErrorLogin(true); // Mengatur errorLogin menjadi true saat login gagal
         }
     };
-
 
     const toggleShowPassword = () => {
         setShowPassword(prevState => !prevState); // Mengubah nilai state showPassword menjadi kebalikan dari nilai sebelumnya

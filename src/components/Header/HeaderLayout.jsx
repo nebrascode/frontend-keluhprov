@@ -2,6 +2,7 @@ import { useDispatch } from 'react-redux';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 import { toggleSidebar } from '../../services/store';
 import { useLocation, useParams } from 'react-router-dom';
+import profil from "../../assets/profile/foto2.png";
 
 const HeaderLayout = () => {
     const dispatch = useDispatch();
@@ -49,7 +50,7 @@ const HeaderLayout = () => {
             </section>
             <section className="md:pr-9">
                 <img
-                    src="http://localhost:8000/profile-photos/admin-default.jpg"
+                    src={profil}
                     alt="profile"
                     className="w-12 h-12 rounded-full bg-white"
                 />

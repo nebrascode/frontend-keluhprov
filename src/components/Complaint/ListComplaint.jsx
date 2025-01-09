@@ -26,15 +26,15 @@ import { format } from "date-fns";
 import { id } from "date-fns/locale";
 
 const ListComplaint = () => {
-  const [complaints, setComplaints] = useState([]);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filteredComplaints, setFilteredComplaints] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [ complaints, setComplaints ] = useState([]);
+  const [ page, setPage ] = useState(0);
+  const [ rowsPerPage, setRowsPerPage ] = useState(10);
+  const [ searchTerm, setSearchTerm ] = useState("");
+  const [ filteredComplaints, setFilteredComplaints ] = useState([]);
+  const [ categories, setCategories ] = useState([]);
+  const [ selectedCategory, setSelectedCategory ] = useState("");
+  const [ loading, setLoading ] = useState(false);
+  const [ error, setError ] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const ListComplaint = () => {
 
   useEffect(() => {
     filterComplaints();
-  }, [searchTerm, complaints, selectedCategory]);
+  }, [ searchTerm, complaints, selectedCategory ]);
 
   const fetchComplaints = async () => {
     setLoading(true);
@@ -295,7 +295,7 @@ const ListComplaint = () => {
                 </TableBody>
               </Table>
               <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
+                rowsPerPageOptions={[ 5, 10, 25 ]}
                 component="div"
                 count={filteredComplaints.length}
                 rowsPerPage={rowsPerPage}

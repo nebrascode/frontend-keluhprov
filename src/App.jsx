@@ -18,7 +18,6 @@ import DetailNews from "./pages/Berita/detailNews";
 import ChatListPage from "./pages/chat/ChatList"
 import ChatDetailPage from "./pages/chat/chatDetail"
 import NotFound from './pages/404-NotFound';
-import Schedule from "./pages/schedules/schedules"
 
 function App() {
   return (
@@ -38,7 +37,6 @@ function App() {
           <Route path="/news-detail/:id/edit" element={<EditNews />} />
           <Route path="/news-detail/:id" element={<DetailNews />} />
           <Route path="/chat-user" element={<ChatListPage />} />
-          <Route path="/schedules" element={<Schedule />} />
           <Route path="/chat-user/:id" element={<ChatDetailPage />} />
         </Route>
 
