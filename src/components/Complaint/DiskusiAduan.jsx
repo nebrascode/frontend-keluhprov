@@ -1,7 +1,10 @@
 /* eslint-disable react/prop-types */
 import useDiskusiAduan from "../../Hooks/useDiskusiAduan";
-import iconGemeni from "../../assets/icon.svg"; 
+import iconGemeni from "../../assets/icon.svg";
 import Hapus from "../../assets/delete_24px.svg";
+import profile1 from "../../assets/profile/foto2.png";
+import profile2 from "../../assets/profile/foto1.png"
+
 
 const DiskusiAduan = ({ complaint, discussions }) => {
   const {
@@ -31,24 +34,28 @@ const DiskusiAduan = ({ complaint, discussions }) => {
       </section>
       <div className="h-72 overflow-y-auto">
         {" "}
-        {error ? ( 
+        {error ? (
           <p className="text-center text-gray-500 mt-4">{error}</p>
         ) : discussions.length > 0 ? ( // Jika terdapat diskusi, map dan tampilkan setiap diskusi
           discussions.map((discussion) => (
             <div
               key={discussion.id}
-              className={`border-b border-light-1 p-2 flex flex-col gap-3 ${
-                discussion.user ? "md:flex-row" : "md:flex-row-reverse"
-              }`}
+              className={`border-b border-light-1 p-2 flex flex-col gap-3 ${discussion.user ? "md:flex-row" : "md:flex-row-reverse"
+                }`}
             >
               {discussion.user ? ( // Jika diskusi dari user, tampilkan avatar user dan informasi diskusi
                 <>
                   <img
-                    src={`http://localhost:8000/${discussion.user.profile_photo}`}
+                    src={profile2}
                     alt="User avatar"
-                    className="rounded-full ml-4"
+                    className="rounded-full mr-4"
                     style={{ width: "40px", height: "40px" }}
                   />
+
+                  <div className="relative overflow-hidden bg-gray-100 rounded-full ml-4 dark:bg-gray-600">
+                    <svg className="absolute w-12 h-12 text-gray-400 -left-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                  </div>
+
                   <div className="flex-grow">
                     <div className="flex justify-between items-center">
                       <div>
@@ -64,7 +71,6 @@ const DiskusiAduan = ({ complaint, discussions }) => {
                         className="text-red-500 flex items-center"
                       >
                         <img src={Hapus} alt="" className="w-4 h-4 mr-1" />{" "}
-                        Hapus
                       </button>
                     </div>
                     <p>{discussion.comment}</p>
@@ -74,7 +80,7 @@ const DiskusiAduan = ({ complaint, discussions }) => {
                 // Jika diskusi dari admin, tampilkan avatar admin dan informasi diskusi
                 <>
                   <img
-                    src={`http://localhost:8000/${discussion.admin.profile_photo}`}
+                    src={profile1}
                     alt="Admin avatar"
                     className="rounded-full mr-4"
                     style={{ width: "40px", height: "40px" }}
@@ -86,7 +92,6 @@ const DiskusiAduan = ({ complaint, discussions }) => {
                         className="text-red-500 flex items-center"
                       >
                         <img src={Hapus} alt="" className="w-4 h-4 mr-1" />{" "}
-                        Hapus
                       </button>
                       <div>
                         <span className="text-gray-500 text-sm">
@@ -141,15 +146,14 @@ const DiskusiAduan = ({ complaint, discussions }) => {
         {" "}
         {/* Bagian untuk menampilkan form untuk mengirimkan diskusi baru */}
         <button
-          className={`flex w-full justify-center items-center rounded border border-dark-4 py-2 px-5 gap-1 ${
-            isFetchingRecommendation ? "opacity-50 cursor-not-allowed" : ""
-          }`}
+          className={`flex w-full justify-center items-center rounded border border-dark-4 py-2 px-5 gap-1 ${isFetchingRecommendation ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           onClick={fetchRecommendation}
           disabled={isFetchingRecommendation}
         >
-          <img src={iconGemeni} alt="icon" /> 
+          <img src={iconGemeni} alt="icon" />
           <p className="bg-gradient-to-r from-[#4796E3] to-[#C96676] text-transparent bg-clip-text">
-            {isFetchingRecommendation 
+            {isFetchingRecommendation
               ? "Harap tunggu..."
               : "Get Rekomendasi AI"}
           </p>
@@ -157,18 +161,17 @@ const DiskusiAduan = ({ complaint, discussions }) => {
         <textarea
           className="w-full mt-5 border border-gray-300 rounded p-2 min-h-28"
           value={textInput}
-          onChange={(e) => setTextInput(e.target.value)} 
+          onChange={(e) => setTextInput(e.target.value)}
           disabled={isSubmitting}
           cols="30"
         ></textarea>
         <button
-          className={`text-info-3 bg-white border border-info-3 px-6 py-2.5 rounded shadow mt-3 font-medium ${
-            isSubmitting ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-          onClick={postDiscussion} 
-          disabled={isSubmitting} 
+          className={`text-info-3 bg-white border border-info-3 px-6 py-2.5 rounded shadow mt-3 font-medium ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          onClick={postDiscussion}
+          disabled={isSubmitting}
         >
-          Kirim Diskusi 
+          Kirim Diskusi
         </button>
       </div>
     </div>

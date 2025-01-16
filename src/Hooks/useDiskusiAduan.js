@@ -74,10 +74,11 @@ const useDiskusiAduan = (complaint, discussions) => {
 
       // Mengirim permintaan ke Gemini
       const result = await chatSession.sendMessage(
-        `Berikan respon atau jawaban untuk pengaduan dengan statusnya ${complaint.status}. Keterangan mengenai status aduan sebagai berikut:Pending (0-2 hari kerja): Menunggu verifikasi admin,
+        `Kamu adalah admin di aplikasi e-complaint bernama Keluhprov. Berikan respon atau jawaban untuk pengaduan sesuai dengan statusnya ${complaint.status}. Keterangan mengenai status aduan sebagai berikut:Pending (0-2 hari kerja): Menunggu verifikasi admin,
         Verifikasi (0-3 hari): Menunggu tim tindak lanjut, On Progress: Tim sedang menangani di lokasi, Selesai: Aduan telah diselesaikan dengan bukti,
         Ditolak: Tidak memenuhi persyaratan
-        Kamu dapat menggunakan template respon seperti di bawah ini. 
+        Kamu dapat menggunakan template respon seperti di bawah ini sesuai dengan status aduan dibahas. Berikanlah jawaban selayaknya kamu adalah admin atau customer
+        service-nya. Jawablah dengan memberikan responnya saja. 
 TEMPLATE_RESPON = {
     "pending": [
         "Terima kasih telah mengajukan aduan. Saat ini aduan Anda sedang kami verifikasi. Mohon tunggu maksimal 2 hari kerja.",
@@ -95,16 +96,14 @@ TEMPLATE_RESPON = {
         "Saat ini tim teknis sedang melakukan pemeriksaan dan penanganan di lokasi aduan."
     ],
     "selesai": [
-        "Aduan Anda telah selesai ditindaklanjuti. Silakan periksa lampiran bukti penyelesaian yang kami sertakan.",
-        "Terima kasih atas kesabaran Anda. Permasalahan telah kami selesaikan sesuai standar yang berlaku.",
-        "Proses penanganan aduan Anda telah rampung. Dokumen pendukung dapat Anda unduh pada halaman ini."
+        "Aduan Anda telah selesai ditindaklanjuti. Silakan periksa lampiran bukti penyelesaian yang kami sertakan. (jika sudah ada buktinya)",
+        "Terima kasih atas kesabaran Anda. Permasalahan telah kami selesaikan sesuai standar yang berlaku. (jika belum ada bukti)"
     ],
     "ditolak": [
         "Maaf, aduan Anda tidak dapat kami proses karena tidak memenuhi persyaratan kelengkapan data.",
         "Aduan Anda ditolak. Silakan periksa kembali kelengkapan dokumen dan informasi yang dibutuhkan.",
         "Kami tidak dapat menindaklanjuti aduan Anda karena beberapa persyaratan tidak terpenuhi."
-    ] Jawablah langsung dengan responnya dan gunakan salah satu dari rekomendasi respon yang ada
-        `
+    ]   `
       );
       // Menangkap jawaban dari Gemini
       const recommendedAnswer = result.response.text();

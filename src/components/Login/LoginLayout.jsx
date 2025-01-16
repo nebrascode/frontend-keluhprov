@@ -45,7 +45,7 @@ export default function Login() {
                 navigate("/dashboard");
             }
         } catch (error) {
-            setErrorLogin(true); // Mengatur errorLogin menjadi true saat login gagal
+            setErrorLogin({ message: 'Email atau password salah.' });  // Mengatur errorLogin menjadi true saat login gagal
         }
     };
 
@@ -100,6 +100,11 @@ export default function Login() {
                             </span>
                         </div>
                     </div>
+
+                    {/* Tampilkan pesan error */}
+                    {errorLogin.message && (
+                        <p className="text-error-3 text-center text-sm mt-2">{errorLogin.message}</p>
+                    )}
 
                     {/* Button Login */}
                     <button type="submit" className=" bg-main-color w-full px-6 mt-5 mb-3 lg:mb-0 lg:mt-8 py-2.5 justify-center items-center inline-flex rounded-md shadow-lg hover:bg-main-darker ">
