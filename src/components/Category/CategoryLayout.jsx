@@ -135,7 +135,7 @@ function CategoryLayout() {
       setIsAdding(false);
       fetchCategory();
       Swal.fire({
-        position: 'top-end',
+        position: 'center',
         icon: 'success',
         title: 'Kategori berhasil ditambahkan',
         showConfirmButton: false,
