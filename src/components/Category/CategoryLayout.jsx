@@ -118,7 +118,7 @@ function CategoryLayout() {
       setIsAdding(false);
       fetchCategory();
       Swal.fire({
-        position: 'top-end',
+        position: 'center',
         icon: 'success',
         title: 'Kategori berhasil ditambahkan',
         showConfirmButton: false,
@@ -169,7 +169,7 @@ function CategoryLayout() {
       setCurrentCategory(null);
       fetchCategory(); // Refresh the categories list
       Swal.fire({
-        position: 'top-end',
+        position: 'center',
         icon: 'success',
         title: 'Kategori berhasil diperbarui',
         showConfirmButton: false,
@@ -285,8 +285,8 @@ function CategoryLayout() {
                   </label>
                   <input
                     type="text"
-                    id="Name"
-                    name="Name"
+                    id="name"
+                    name="name"
                     value={newCategory.name}
                     onChange={handleNewCategoryInputChange}
                     className="w-full p-2 border border-gray-300 rounded"
@@ -299,8 +299,8 @@ function CategoryLayout() {
                   </label>
                   <input
                     type="text"
-                    id="Description"
-                    name="Description"
+                    id="description"
+                    name="description"
                     value={newCategory.description}
                     onChange={handleNewCategoryInputChange}
                     className="w-full p-2 border border-gray-300 rounded"
