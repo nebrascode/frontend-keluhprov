@@ -160,32 +160,51 @@ function ListAdminLayout() {
 
     const handleNewAdminSubmit = async (e) => {
         e.preventDefault();
-
+    
         try {
             const token = sessionStorage.getItem('token');
+    
+            // Log data untuk debugging
+            console.log('Data yang dikirim:', newAdmin);
+    
             const response = await axios.post('http://localhost:8000/api/v1/admins', newAdmin, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
-
-            if (response.status !== 200) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+    
+            // Cek apakah response memiliki status 201 (Created)
+            if (response.status === 201 || response.status === 200) {
+                // Refresh list admin
+                fetchAdmins();
+    
+                // Reset state untuk form tambah admin
+                setNewAdmin({ name: '', email: '', telephone_number: '', password: '' });
+                setIsAdding(false);
+    
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Successfully added new account",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            } else {
+                throw new Error(`Unexpected response status: ${response.status}`);
             }
-
-            setIsAdding(false);
-            fetchAdmins(); // Refresh the admin list
-            Swal.fire({
-                position: "top-end",
-                icon: "success",
-                title: "Successfully added new account",
-                showConfirmButton: false,
-                timer: 1500
-            });
         } catch (error) {
             console.error('Error creating new admin:', error);
+    
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: "Failed to add new account",
+                text: error.message,
+                showConfirmButton: true
+            });
         }
     };
+    
 
 
     const togglePasswordVisibility = () => {
