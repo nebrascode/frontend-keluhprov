@@ -1,6 +1,4 @@
 import { IoIosArrowRoundBack } from "react-icons/io";
-import { FiPaperclip } from "react-icons/fi";
-import { IoMicOutline } from "react-icons/io5";
 import { TiLocationArrowOutline } from "react-icons/ti";
 import { Link, useParams } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
@@ -139,7 +137,7 @@ const ChatDetail = () => {
 
       {/* Chat Messages */}
       <div className="p-4 h-96 overflow-y-auto">
-        <div className="text-center text-sm mb-4">Today</div>
+        <div className="text-center text-sm mb-4">{new Date(messages[0].CreatedAt).toLocaleDateString()}</div>
         {messages.map((chat) => (
           <ChatBubble
             key={chat.ID}
@@ -153,9 +151,6 @@ const ChatDetail = () => {
 
       {/* Message Input */}
       <div className="flex items-center p-4">
-        <button className="hover:text-gray-500">
-          <FiPaperclip />
-        </button>
         <input
           type="text"
           className="flex-grow ml-4 p-2 border-none"
@@ -164,9 +159,6 @@ const ChatDetail = () => {
           onChange={(e) => setNewMessage(e.target.value)} // Update state saat input berubah
         />
         <div className="flex gap-2 text-xl">
-          <button className="hover:text-gray-500">
-            <IoMicOutline />
-          </button>
           <button
             className="hover:text-gray-500"
             onClick={sendMessage} // Kirim pesan saat tombol diklik

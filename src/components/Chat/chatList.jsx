@@ -28,10 +28,6 @@ const ChatList = () => {
 
       // Format data agar sesuai dengan kebutuhan
       const formattedData = response.data.map((room) => {
-        const unreadMessages = room.Messages.filter(
-          (message) => message.SenderType === "user"
-        );
-
         return {
           id: room.ID,
           name: room.Name,
@@ -41,8 +37,7 @@ const ChatList = () => {
             : "No messages yet",
           time: room.Messages.length > 0
             ? new Date(room.Messages[room.Messages.length - 1].CreatedAt).toLocaleTimeString()
-            : "",
-          unreadCount: unreadMessages.length,
+            : ""
         };
       });
 
@@ -55,15 +50,6 @@ const ChatList = () => {
   };
 
   const handleChatOpen = (chatId) => {
-    // Perbarui unreadCount menjadi 0 untuk chat yang di-klik
-    const updatedData = data.map((chat) => {
-      if (chat.id === chatId) {
-        return { ...chat, unreadCount: 0 }; // Reset unreadCount
-      }
-      return chat;
-    });
-
-    setData(updatedData); // Update state data
     navigate(`/chat-user/${chatId}`); // Pindah ke halaman detail chat
   };
 
@@ -103,7 +89,6 @@ const ChatList = () => {
               name: chat.name,
               message: chat.lastMessage,
               time: chat.time,
-              unreadCount: chat.unreadCount,
             }}
             onChatOpen={() => handleChatOpen(chat.id)} // Panggil handleChatOpen saat chat dibuka
           />
