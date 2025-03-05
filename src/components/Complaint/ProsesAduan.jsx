@@ -27,7 +27,10 @@ const ProsesAduan = ({ complaintId, refreshProcess }) => {
             },
           }
         );
+
+        //mengurutkan data sesuai kolom updated_at yang terbaru
         const sortedProcesses = response.data.data.sort((a, b) => {
+          
           return new Date(b.updated_at) - new Date(a.updated_at);
         });
         setProcesses(sortedProcesses);

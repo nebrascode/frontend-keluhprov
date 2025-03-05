@@ -16,7 +16,7 @@ export default function Login() {
         event.preventDefault();
         try {
             const response = await axios.post('http://localhost:8000/api/v1/admins/login', {
-                // Data yang dikirimkan dalam body request, sesuaikan dengan API Anda
+                // Data yang dikirimkan dalam body request, sesuaikan dengan API
                 email: event.target.email.value,
                 password: event.target.password.value,
             }, {

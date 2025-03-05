@@ -172,7 +172,7 @@ function CategoryLayout() {
         position: 'center',
         icon: 'success',
         title: 'Kategori berhasil diperbarui',
-        showConfirmButton: false,
+        showConfirmButton: true,
         timer: 1500,
       });
     } catch (error) {

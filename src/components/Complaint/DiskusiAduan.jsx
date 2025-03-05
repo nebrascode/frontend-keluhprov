@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unknown-property */
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import useDiskusiAduan from "../../Hooks/useDiskusiAduan";
 import iconGemeni from "../../assets/icon.svg";
